@@ -33,3 +33,16 @@ DESCRIPTION
 正常情况下，sed 重复拷贝输入的每一行，不包含结尾的换行符，到 pattern space 内，（除非在 ``D'' function 之后有什么东西），应用所有的 command 到那些匹配 pattern space 的 address，拷贝 pattern space 到标准输出，再添加换行符，然后删除 pattern space。
 
 一些 function 会为之后的检索而用 hold space 来保存所有或部分的 pattern space。
+
+Sed Addresses
+address 不是所必须的，但是一旦指定就必须是一个数字（以累加方式标识每一个输入行），美元符号表示输入行的最后一行，或者 context address（在分隔符之间由正则表达式组成）。
+
+没有 address 的 command line 匹配所有 pattern space。
+
+只有一个 address 的 command line 匹配所有的跟 address 相配 pattern space。
+
+由两个 address 组成的 command line 匹配一个范围。这个范围从与第一个 address 相配的 pattern space开始。到与第二个 address 相配的最近的 pattern space 为止。如果第二个 address 是一个数字并且是小于等于匹配第一个 address 行号的数，那么只有第一行会被匹配。如果第二个 address 是一个 context address，sed 不会让第二个 address 与已经匹配第一个 address 的 pattern space 重新匹配。从匹配范围之后的第一行开始，sed 开始为第一个 address 再次查询匹配。
+
+Editing command 可以通过使用感叹号（``!''）function 被应用到非选择的 pattern space。
+
+Sed Regular Expressions
