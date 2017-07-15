@@ -1,0 +1,35 @@
+Translated from https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/sed.1.html
+Suggestion: A nice blog at http://www.funtoo.org/Sed_by_Example,_Part_1
+
+NAME
+sed -- stream editor
+
+SYNOPSIS
+sed [-Ealn] command [file ...]
+sed [-Ealn] [-e command] [-f command_file] [-i extension] [file ...]
+
+DESCRIPTION
+ sed 工具读取指定的文件，如果没有指定文件就从标准输入读取，修改输入为由 command list 指定的那样。修改后的输入数据随后被写入到标准输出。
+
+一条单独的 command 也许应该作为 sed 的第一个参数。多条 command 也许应该通过 -e 或者 -f 选项指定。所有的 command 会按照指定时的顺序被应用于输入的修改上而不是它们的原始内容决定顺序。
+
+以下选项可用：
+-E	将正则表达式以扩展标准解析而不是基本标准。re_format(7) 手册对两者进行了详细的描述。
+-a	默认的，作为 ``w’’ function 参数的那些文本在处理之前就会被创建（或截断）. -a 参数将会让 sed 延迟打开每个文件直到一个 command 包含着的 ``w’’ function 被应用到输入行。
+-e command
+	追加后面的编辑命令到 command 列表。
+-f command_file
+	追加 command_file 内的编辑命令到 command 列表。这些编辑命令应该一行一个。
+-i extension
+	对文件进行直接编辑，保存备份到指定的 extension 中。如果给定一个空的 extension （用两个单引号表示空’’），没有备份会被保存。对文件进行直接编辑的时候不建议使用空 extension，在磁盘空间用尽等等情况下你会存在丢失全部或部分内容的风险（as you risk corruption or partial content in situations where disk space is exhausted, etc.）。
+-l	（这是 L 的小写字母）将输出行做缓冲。
+-n	默认的，当所有的 command 被应用到输入行上之后它就会被回显到标准输出上。-n 选项会抑制这种行为。
+
+以下是 sed 的 command 格式：
+    [address[, address]]function[arguments]
+
+或许应该在 command 的第一个 address 和 function 之前插入空格。
+
+正常情况下，sed 重复拷贝输入的每一行，不包含结尾的换行符，到 pattern space 内，（除非在 ``D'' function 之后有什么东西），应用所有的 command 到那些匹配 pattern space 的 address，拷贝 pattern space 到标准输出，再添加换行符，然后删除 pattern space。
+
+一些 function 会为之后的检索而用 hold space 来保存所有或部分的 pattern space。
