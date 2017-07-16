@@ -9,46 +9,84 @@ sed [-Ealn] command [file ...]
 sed [-Ealn] [-e command] [-f command_file] [-i extension] [file ...]
 
 DESCRIPTION
- sed 工具读取指定的文件，如果没有指定文件就从标准输入读取，修改输入为由 command list 指定的那样。修改后的输入数据随后被写入到标准输出。
+     sed 工具读取指定的文件，如果没有指定文件就从标准输入读取，修改输入为由 command list 指定的那样。修改后的输入数据随后被写入到标准输出。
 
-一条单独的 command 也许应该作为 sed 的第一个参数。多条 command 也许应该通过 -e 或者 -f 选项指定。所有的 command 会按照指定时的顺序被应用于输入的修改上而不是它们的原始内容决定顺序。
+    一条单独的 command 也许应该作为 sed 的第一个参数。多条 command 也许应该通过 -e 或者 -f 选项指定。所有的 command 会按照指定时的顺序被应用于输入的修改上而不是它们的原始内容决定顺序。
 
-以下选项可用：
--E	将正则表达式以扩展标准解析而不是基本标准。re_format(7) 手册对两者进行了详细的描述。
--a	默认情况下，作为 ``w’’ function 参数的那些文本在处理之前就会被创建（或截断）. -a 参数将会让 sed 延迟打开每个文件直到一个 command 包含着的 ``w’’ function 被应用到输入行。
--e command
-	追加后面的编辑命令到 command 列表。
--f command_file
-	追加 command_file 内的编辑命令到 command 列表。这些编辑命令应该一行一个。
--i extension
-	对文件进行直接编辑，保存备份到指定的 extension 中。如果给定一个空的 extension （用两个单引号表示空’’），没有备份会被保存。对文件进行直接编辑的时候不建议使用空 extension，在磁盘空间用尽等等情况下你会存在丢失全部或部分内容的风险（as you risk corruption or partial content in situations where disk space is exhausted, etc.）。
--l	（这是 L 的小写字母）将输出行做缓冲。
--n	默认的，当所有的 command 被应用到输入行上之后它就会被回显到标准输出上。-n 选项会抑制这种行为。
+    以下选项可用：
+    -E	将正则表达式以扩展标准解析而不是基本标准。re_format(7) 手册对两者进行了详细的描述。
+    -a	默认情况下，作为 ``w’’ function 参数的那些文本在处理之前就会被创建（或截断）. -a 参数将会让 sed 延迟打开每个文件直到一个 command 包含着的 ``w’’ function 被应用到输入行。
+    -e command
+    	追加后面的编辑命令到 command 列表。
+    -f command_file
+    	追加 command_file 内的编辑命令到 command 列表。这些编辑命令应该一行一个。
+    -i extension
+    	对文件进行直接编辑，保存备份到指定的 extension 中。如果给定一个空的 extension （用两个单引号表示空’’），没有备份会被保存。对文件进行直接编辑的时候不建议使用空 extension，在磁盘空间用尽等等情况下你会存在丢失全部或部分内容的风险（as you risk corruption or partial content in situations where disk space is exhausted, etc.）。
+    -l	（这是 L 的小写字母）将输出行做缓冲。
+    -n	默认的，当所有的 command 被应用到输入行上之后它就会被回显到标准输出上。-n 选项会抑制这种行为。
 
-以下是 sed 的 command 格式：
-    [address[, address]]function[arguments]
+    以下是 sed 的 command 格式：
+        [address[, address]]function[arguments]
 
-或许应该在 command 的第一个 address 和 function 之前插入空格。
+    或许应该在 command 的第一个 address 和 function 之前插入空格。
 
-正常情况下，sed 重复拷贝输入的每一行，不包含结尾的换行符，到 pattern space 内，（除非在 ``D'' function 之后有什么东西），应用所有的 command 到那些匹配 pattern space 的 address，拷贝 pattern space 到标准输出，再添加换行符，然后删除 pattern space。
+    正常情况下，sed 重复拷贝输入的每一行，不包含结尾的换行符，到 pattern space 内，（除非在 ``D'' function 之后有什么东西），应用所有的 command 到那些匹配 pattern space 的 address，拷贝 pattern space 到标准输出，再添加换行符，然后删除 pattern space。
 
-一些 function 会为之后的检索而用 hold space 来保存所有或部分的 pattern space。
+    一些 function 会为之后的检索而用 hold space 来保存所有或部分的 pattern space。
 
 Sed Addresses
-address 不是所必须的，但是一旦指定就必须是一个数字（以累加方式标识每一个输入行），美元符号表示输入行的最后一行，或者 context address（在分隔符之间由正则表达式组成）。
+    address 不是所必须的，但是一旦指定就必须是一个数字（以累加方式标识每一个输入行），美元符号表示输入行的最后一行，或者 context address（在分隔符之间由正则表达式组成）。
 
-没有 address 的 command line 匹配所有 pattern space。
+    没有 address 的 command line 匹配所有 pattern space。
 
-只有一个 address 的 command line 匹配所有的跟 address 相配 pattern space。
+    只有一个 address 的 command line 匹配所有的跟 address 相配 pattern space。
 
-由两个 address 组成的 command line 匹配一个范围。这个范围从与第一个 address 相配的 pattern space开始。到与第二个 address 相配的最近的 pattern space 为止。如果第二个 address 是一个数字并且是小于等于匹配第一个 address 行号的数，那么只有第一行会被匹配。如果第二个 address 是一个 context address，sed 不会让第二个 address 与已经匹配第一个 address 的 pattern space 重新匹配。从匹配范围之后的第一行开始，sed 开始为第一个 address 再次查询匹配。
+    由两个 address 组成的 command line 匹配一个范围。这个范围从与第一个 address 相配的 pattern space开始。到与第二个 address 相配的最近的 pattern space 为止。如果第二个 address 是一个数字并且是小于等于匹配第一个 address 行号的数，那么只有第一行会被匹配。如果第二个 address 是一个 context address，sed 不会让第二个 address 与已经匹配第一个 address 的 pattern space 重新匹配。从匹配范围之后的第一行开始，sed 开始为第一个 address 再次查询匹配。
 
-Editing command 可以通过使用感叹号（``!''）function 被应用到非选择的 pattern space。
+    Editing command 可以通过使用感叹号（``!''）function 被应用到非选择的 pattern space。
 
 Sed Regular Expressions
-sed 中所使用的正则表达式，默认情况下，是标准的正则表达式（BREs，更多信息请查看 re_format(7)），但是可以通过给出 -E 标志来使用扩展的正则表达式。另外，sed 对正则表达式还有以下两个补充：
-1.  在 context address 中，除了反斜杠（``\''）和换行符的任何字符都可以用来作为正则表达式的分隔符。还有，在分隔符前面添加反斜杠将导致以字面意思对待那个字符。举例来说，在这种 \xabc\xdefx context address 中，正则表达式的分隔符其实是那个 ``x'' 但是第二个 ``x'' 只代表它本身，所以实际上的正则表达式是 ``abcxdef''。
-2.  在嵌入 pattern space 中的转义序列 \n 匹配一个换行符。你不能，也绝对不要，在 address 或者 替换 command 中使用字面意义上的的换行符。
-sed 正则表达式的专有特性是它默认用最后一次使用的正则表达式。如果正则表达式是空的，换句话说就是，只指定了分隔符，就使用最后一次遇到过的正则表达式。最后一个正则表达式的定义为作为一个 address 或者替换 command 的一部分被使用过的正则表达式，并且是在运行时，不是编译时。举例来说，这条 command ``/abc/s//XXX/'' 将会把 ``abc'' 替换成 ``XXX''。
+    sed 中所使用的正则表达式，默认情况下，是标准的正则表达式（BREs，更多信息请查看 re_format(7)），但是可以通过给出 -E 标志来使用扩展的正则表达式。另外，sed 对正则表达式还有以下两个补充：
+    1.  在 context address 中，除了反斜杠（``\''）和换行符的任何字符都可以用来作为正则表达式的分隔符。还有，在分隔符前面添加反斜杠将导致以字面意思对待那个字符。举例来说，在这种 \xabc\xdefx context address 中，正则表达式的分隔符其实是那个 ``x'' 但是第二个 ``x'' 只代表它本身，所以实际上的正则表达式是 ``abcxdef''。
+    2.  在嵌入 pattern space 中的转义序列 \n 匹配一个换行符。你不能，也绝对不要，在 address 或者 替换 command 中使用字面意义上的的换行符。
+    sed 正则表达式的专有特性是它默认用最后一次使用的正则表达式。如果正则表达式是空的，换句话说就是，只指定了分隔符，就使用最后一次遇到过的正则表达式。最后一个正则表达式的定义为作为一个 address 或者替换 command 的一部分被使用过的正则表达式，并且是在运行时，不是编译时。举例来说，这条 command ``/abc/s//XXX/'' 将会把 ``abc'' 替换成 ``XXX''。
 
 Sed Functions
+
+
+
+
+
+ENVIRONMENT
+     The COLUMNS, LANG, LC_ALL, LC_CTYPE and LC_COLLATE environment variables affect the execution of sed as
+     described in environ(7).
+
+EXIT STATUS
+     The sed utility exits 0 on success, and >0 if an error occurs.
+
+LEGACY DESCRIPTION
+     Warnings are not generated for unused labels.  In legacy mode, they are.
+
+     In the -y function, doubled backslashes are not converted to single ones.  In legacy mode, they are.
+
+     For more information about legacy mode, see compat(5).
+
+SEE ALSO
+     awk(1), ed(1), grep(1), regex(3), compat(5), re_format(7)
+
+STANDARDS
+     The sed utility is expected to be a superset of the IEEE Std 1003.2 (``POSIX.2'') specification.
+
+     The -E, -a and -i options are non-standard FreeBSD extensions and may not be available on other operat-ing operating
+     ing systems.
+
+HISTORY
+     A sed command, written by L. E. McMahon, appeared in Version 7 AT&T UNIX.
+
+AUTHORS
+     Diomidis D. Spinellis <dds@FreeBSD.org>
+
+BUGS
+     Multibyte characters containing a byte with value 0x5C (ASCII `\') may be incorrectly treated as line
+     continuation characters in arguments to the ``a'', ``c'' and ``i'' commands.  Multibyte characters can-not cannot
+     not be used as delimiters with the ``s'' and ``y'' commands.
