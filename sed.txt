@@ -15,7 +15,7 @@ DESCRIPTION
 
 以下选项可用：
 -E	将正则表达式以扩展标准解析而不是基本标准。re_format(7) 手册对两者进行了详细的描述。
--a	默认的，作为 ``w’’ function 参数的那些文本在处理之前就会被创建（或截断）. -a 参数将会让 sed 延迟打开每个文件直到一个 command 包含着的 ``w’’ function 被应用到输入行。
+-a	默认情况下，作为 ``w’’ function 参数的那些文本在处理之前就会被创建（或截断）. -a 参数将会让 sed 延迟打开每个文件直到一个 command 包含着的 ``w’’ function 被应用到输入行。
 -e command
 	追加后面的编辑命令到 command 列表。
 -f command_file
@@ -46,3 +46,9 @@ address 不是所必须的，但是一旦指定就必须是一个数字（以累
 Editing command 可以通过使用感叹号（``!''）function 被应用到非选择的 pattern space。
 
 Sed Regular Expressions
+sed 中所使用的正则表达式，默认情况下，是标准的正则表达式（BREs，更多信息请查看 re_format(7)），但是可以通过给出 -E 标志来使用扩展的正则表达式。另外，sed 对正则表达式还有以下两个补充：
+1.  在 context address 中，除了反斜杠（``\''）和换行符的任何字符都可以用来作为正则表达式的分隔符。还有，在分隔符前面添加反斜杠将导致以字面意思对待那个字符。举例来说，在这种 \xabc\xdefx context address 中，正则表达式的分隔符其实是那个 ``x'' 但是第二个 ``x'' 只代表它本身，所以实际上的正则表达式是 ``abcxdef''。
+2.  在嵌入 pattern space 中的转义序列 \n 匹配一个换行符。你不能，也绝对不要，在 address 或者 替换 command 中使用字面意义上的的换行符。
+sed 正则表达式的专有特性是它默认用最后一次使用的正则表达式。如果正则表达式是空的，换句话说就是，只指定了分隔符，就使用最后一次遇到过的正则表达式。最后一个正则表达式的定义为作为一个 address 或者替换 command 的一部分被使用过的正则表达式，并且是在运行时，不是编译时。举例来说，这条 command ``/abc/s//XXX/'' 将会把 ``abc'' 替换成 ``XXX''。
+
+Sed Functions
